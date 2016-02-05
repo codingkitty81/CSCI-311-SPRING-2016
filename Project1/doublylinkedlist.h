@@ -4,7 +4,7 @@
  * @brief
  *    Template for doubly linked list class.
  *
- * @author Judy Challinger & Your Name Here!
+ * @author Judy Challinger & Katherine Jouzapaitis
  * @date 1/1/16
  */
 
@@ -44,7 +44,7 @@ template <class T>
 DoublyLinkedList<T>::Node::Node() {
 
    // Your code here...
-
+   next = prev = nullptr;
 }
 
 /**
@@ -54,7 +54,7 @@ template <class T>
 DoublyLinkedList<T>::DoublyLinkedList() {
 
    // Your code here...
-
+   head = tail = current = nullptr;
 }
 
 /**
@@ -64,7 +64,7 @@ template <class T>
 DoublyLinkedList<T>::~DoublyLinkedList() {
 
    // Your code here...
-
+   head = tail = current = nullptr;
 }
 
 /**
@@ -80,7 +80,24 @@ template <class T>
 void DoublyLinkedList<T>::append(T* data) {
 
    // Your code here...
-
+   current = new Node();
+   current->data = data;
+   
+   if (head == nullptr) {
+      head = current;
+      current->next = nullptr;
+      current->prev = nullptr;
+   } else {
+      tail = head;
+    
+      while (tail->next != nullptr) {
+         tail = tail->next;
+      }
+    
+      tail->next = current;
+      current->prev = tail;
+      current->next = nullptr;
+   }
 }
 
 /**
@@ -95,7 +112,13 @@ template <class T>
 T* DoublyLinkedList<T>::first() {
 
    // Your code here...
-
+   current = head;
+   
+   if (head == nullptr) {
+      return (nullptr);
+   } else {
+      return (head->data);
+   }
 }
 
 /**
@@ -111,7 +134,13 @@ template <class T>
 T* DoublyLinkedList<T>::next() {
 
    // Your code here...
-
+   if (current->next != nullptr) {
+      current = current->next;
+      return (current->data);
+   } else {
+      return (nullptr);
+   }
+   
 }
 
 /**
@@ -127,7 +156,41 @@ template <class T>
 T* DoublyLinkedList<T>::remove() {
 
    // Your code here...
-
+   Node* tempNode = current;
+   
+   if (head == nullptr || current == nullptr) {
+      return (nullptr);
+   }
+   
+   if (current == head) {
+      if (current->next != nullptr) {
+         head = current = current->next;
+         head->prev = nullptr;
+         current->prev = nullptr;
+         delete tempNode;
+         return (current->data);
+      } else {
+         head = current = nullptr;
+         return (nullptr);
+      }
+   }
+   
+   if (current->next == nullptr) {
+      tail = current;
+      current = current->prev;
+      delete tail;
+      tail = current;
+      tail->next = current->next = nullptr;
+      return (nullptr);
+   } else {
+      Node* prevNode = current->prev;
+      current = current->next;
+      tempNode->next = tempNode->prev = nullptr;
+      prevNode->next = current;
+      current->prev = prevNode;
+      delete tempNode;
+      return (current->data);
+   }
 }
 
 #endif // CSCI_311_DOUBLYLINKEDLIST_H
