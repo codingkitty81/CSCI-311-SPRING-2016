@@ -3,6 +3,7 @@
 
 Table::Table() {
    
+   
 }
 
 Table::Table(const string& tableID, int numSeats, const string& serverName) {
