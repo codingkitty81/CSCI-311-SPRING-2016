@@ -18,7 +18,8 @@ Table::Table(const string& tableID, int numSeats, const string& serverName) {
 }
 
 Table::~Table() {
-   
+   delete tableID;
+   delete serverName;
 }
 
 void Table::seatParty(const Party* newParty) {
