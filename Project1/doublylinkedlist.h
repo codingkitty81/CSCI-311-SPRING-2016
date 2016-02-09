@@ -54,6 +54,14 @@ template <class T>
 DoublyLinkedList<T>::DoublyLinkedList() {
 
    // Your code here...
+   Node* toDelete = head;
+   
+   while (toDelete != nullptr) {
+    head = head->next();
+    delete toDelete;
+    toDelete = head;
+   }
+   
    head = tail = current = nullptr;
 }
 
