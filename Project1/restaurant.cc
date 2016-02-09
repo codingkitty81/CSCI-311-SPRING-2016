@@ -34,48 +34,54 @@ void Restaurant::serveParties() {
    Table* openTable = available.first();
    Party* theParty = waiting.first();
    Table* takenTable = occupied.first();
-   
-   while (waiting.first() != nullptr || occupied.first() != nullptr) {
-    while (takenTable != nullptr) {
-     if (takenTable->getTimer() == 0) {
-      std::cout << *(takenTable->getParty()->getReservationName());
-      std::cout << " finished at " << *(takenTable->getTableID()) << std::endl;
-      takenTable->clearTable();
-      available.append(takenTable);
-      occupied.remove();
-     } else {
-      takenTable->decrementTimer();
-     }
+
+   while (theParty != nullptr || takenTable != nullptr) {
+      while (takenTable != nullptr) {
+         if (takenTable->getTimer() == 0) {
+            std::cout << *(takenTable->getParty()->getReservationName());
+            std::cout << " finished at " << *(takenTable->getTableID()) << std::endl;
+            takenTable->clearTable();
+            available.append(takenTable);
+            takenTable = occupied.remove();
+         } else {
+            takenTable->decrementTimer();
+            takenTable = occupied.next();
+         }
      
-     takenTable = occupied.next();
-    }
-   
-   while (theParty != nullptr) {
-     if (theParty->getNumDiners() <= openTable->getNumSeats()) {
-      std::cout << *(theParty->getReservationName());
-      std::cout << " seated at " << *(openTable->getTableID()) << std::endl;
-      openTable->seatParty(theParty);
-      occupied.append(openTable);
-      available.remove();
-      waiting.remove();
-      theParty = waiting.first();
-      openTable = available.first();
-     } else {
-      if (available.next() != nullptr) {
-       openTable = available.next();
-      } else {
-       theParty = waiting.next();
       }
-     }
-     
+   
+    openTable = available.first();
+    theParty = waiting.first();
+   
+      while (theParty != nullptr && openTable != nullptr) {
+         if (theParty->getNumDiners() <= openTable->getNumSeats()) {
+            std::cout << *(theParty->getReservationName());
+            std::cout << " seated at " << *(openTable->getTableID()) << std::endl;
+            servers[*(openTable->getServerName())] += theParty->getNumDiners();
+            openTable->seatParty(theParty);
+            occupied.append(openTable);
+            available.remove();
+            waiting.remove();
+            theParty = waiting.first();
+            openTable = available.first();
+         } else {
+            if ((openTable = available.next()) == nullptr) {
+               openTable = available.first();
+               theParty = waiting.next();
+         }
+      }
+    }
+    
+    openTable = available.first();
+    theParty = waiting.first();
+    takenTable = occupied.first();
    }
    
-  openTable = available.first();
-  theParty = waiting.first();
-  takenTable = occupied.first();
-  }
+   for (std::map<string,int>::iterator it=servers.begin(); it!=servers.end(); ++it) {
+      std::cout << it->first << " served " << it->second << std::endl;
+   }
 }
-
+ 
 int main() {
    Restaurant myDiner;
    myDiner.getInput();
