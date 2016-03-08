@@ -38,6 +38,8 @@ private:
 // You may add your private helper functions here!
 //
    bool isSmaller(int, Record*, Record*); // this is one I used - you may delete
+   void merge_sort(int, int, int);
+   void merge(int, int, int, int);
 };
 
 #endif // CSCI_311_CENSUSDATA_H
