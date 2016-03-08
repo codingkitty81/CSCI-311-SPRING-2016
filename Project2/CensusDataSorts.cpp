@@ -14,13 +14,14 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 #include "CensusData.h"
 
 // formal parameter name commented out to avoid unused variable warning
 void CensusData::insertionSort(int type) {
    int vecSize = this->data.size();
    
-   if(type == 0) {
+   if(type == 0) { //Population
       for(int j = 1; j < vecSize; j++) {
          Record* key = this->data[j];
          int i = j-1;
@@ -30,7 +31,7 @@ void CensusData::insertionSort(int type) {
             }
          data[i+1] = key;
       }
-   } else {
+   } else { //City name
       for(int j = 1; j < vecSize; j++) {
          Record* key = this->data[j];
          int i = j-1;
@@ -46,11 +47,77 @@ void CensusData::insertionSort(int type) {
 
 // formal parameter name commented out to avoid unused variable warning
 void CensusData::mergeSort(int type) {
-   if(type == 0) {
-      
-   }
+   int begin = 0;
+   int end = this->data.size() - 1;
+   merge_sort(type, begin, end);
 }
 
 // formal parameter name commented out to avoid unused variable warning
 void CensusData::quickSort(int /*type*/) {
+   
+}
+
+void CensusData::merge_sort(int type, int begin, int end) {
+   if(begin < end) {
+      int midPoint = floor((begin + end)/2);
+      merge_sort(type, begin, midPoint);
+      merge_sort(type, midPoint + 1, end);
+      merge(type, begin, midPoint, end);
+   }
+}
+
+void CensusData::merge(int type, int begin, int midPoint, int end) {
+   int point1 = midPoint - begin + 1;
+   int point2 = end - midPoint;
+   
+   //Create temp vectors for left and right of midpoint
+   vector<Record*> leftSide;
+   vector<Record*> rightSide;
+      
+   //Populate the temp vectors
+   for(int i = 0; i < point1; i++) {
+      leftSide.push_back(this->data[begin + i]);
+   }
+      
+   for(int j = 0; j < point2; j++) {
+      rightSide.push_back(this->data[midPoint + j + 1]);
+   }
+   
+   //Establish index counters for different vectors
+   int i = 0;
+   int j = 0;
+   int k = begin;
+   
+   while(i < point1 && j < point2) {
+      if(isSmaller(type, leftSide[i], rightSide[j])) {
+         data[k] = leftSide[i];
+         i++;
+      } else {
+         data[k] = rightSide[j];
+         j++;
+      }
+      k++;
+   }
+   
+   //Populate any remaining from leftSide
+   while(i < point1) {
+      data[k] = leftSide[i];
+      i++;
+      k++;
+   }
+   
+   //Populate any remaining from rightSide
+   while(j < point2) {
+      data[k] = rightSide[j];
+      j++;
+      k++;
+   }
+}
+
+bool CensusData::isSmaller(int type, Record* left, Record* right) {
+   if(type == 0) {
+      return (left->population <= right->population);
+   } else {
+      return (*(left->city) <= *(right->city));
+   }
 }
