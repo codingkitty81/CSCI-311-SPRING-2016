@@ -15,46 +15,29 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <random>
 #include "CensusData.h"
 
 // formal parameter name commented out to avoid unused variable warning
 void CensusData::insertionSort(int type) {
-   int vecSize = this->data.size();
+   int vecSize = this->getSize();
    
-   if(type == 0) { //Population
-      for(int j = 1; j < vecSize; j++) {
-         Record* key = this->data[j];
-         int i = j-1;
-            while(i > -1 && this->data[i]->population > key->population) {
-               data[i+1] = data[i];
-               i = i-1;
-            }
-         data[i+1] = key;
-      }
-   } else { //City name
-      for(int j = 1; j < vecSize; j++) {
-         Record* key = this->data[j];
-         int i = j-1;
-            while(i > -1 && *(this->data[i]->city) > *(key->city)) {
-               data[i+1] = data[i];
-               i = i-1;
-            }
-         data[i+1] = key;
-      }
+   for(int j = 1; j < vecSize; j++) {
+      Record* key = this->data[j];
+      int i = j-1;
+         while(i > -1 && !isSmaller(type, data[i], key)) {
+            data[i+1] = data[i];
+            i = i-1;
+         }
+      data[i+1] = key;
    }
-   
 }
 
 // formal parameter name commented out to avoid unused variable warning
 void CensusData::mergeSort(int type) {
    int begin = 0;
-   int end = this->data.size() - 1;
+   int end = this->getSize() - 1;
    merge_sort(type, begin, end);
-}
-
-// formal parameter name commented out to avoid unused variable warning
-void CensusData::quickSort(int /*type*/) {
-   
 }
 
 void CensusData::merge_sort(int type, int begin, int end) {
@@ -112,6 +95,50 @@ void CensusData::merge(int type, int begin, int midPoint, int end) {
       j++;
       k++;
    }
+}
+
+// formal parameter name commented out to avoid unused variable warning
+void CensusData::quickSort(int type) {
+   int p = 0;
+   int r = this->getSize() - 1;
+   
+   randomized_quickSort(type, p, r);
+}
+
+void CensusData::randomized_quickSort(int type, int p, int r) {
+   if(p < r) {
+      int q = randomized_partition(type, p, r);
+      randomized_quickSort(type, p, q - 1);
+      randomized_quickSort(type, q + 1, r);
+   }
+}
+
+int CensusData::randomized_partition(int type, int p, int r) {
+   std::default_random_engine parValue(time(0));
+   std::uniform_int_distribution<int> dist(p, r);
+   
+   int i = dist(parValue);
+   Record* temp = this->data[r];
+   data[r] = data[i];
+   data[i] = temp;
+   return partition(type, p, r);
+}
+
+int CensusData::partition(int type, int p, int r) {
+   Record* x = data[r];
+   int i = p - 1;
+   for(int j = p; j < r; j++) {
+      if(isSmaller(type, data[j], x)) {
+         i++;
+         Record* temp = data[i];
+         data[i] = data[j];
+         data[j] = temp;
+      }
+   }
+   Record* temp2 = data[i + 1];
+   data[i + 1] = data[r];
+   data[r] = temp2;
+   return (i + 1);
 }
 
 bool CensusData::isSmaller(int type, Record* left, Record* right) {
