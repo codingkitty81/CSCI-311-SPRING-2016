@@ -3,6 +3,11 @@
  *
  * @author Judy Challinger
  * @date 2/22/13
+ * 
+ * @author Katherine Jouzapaitis
+ * @date 3/10/2016
+ * 
+ * Added helper functions.
  */
 
 #ifndef CSCI_311_CENSUSDATA_H
@@ -40,6 +45,9 @@ private:
    bool isSmaller(int, Record*, Record*); // this is one I used - you may delete
    void merge_sort(int, int, int);
    void merge(int, int, int, int);
+   void randomized_quickSort(int, int, int);
+   int randomized_partition(int, int, int);
+   int partition(int, int, int);
 };
 
 #endif // CSCI_311_CENSUSDATA_H
