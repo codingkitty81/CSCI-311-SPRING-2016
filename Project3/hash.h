@@ -1,3 +1,12 @@
+/*
+ * @file hash.h   Declarations of Hash class.
+ *
+ * @author Katherine Jouzapaitis
+ * @date 3/30/2016
+ * 
+ * Only added helper function.
+ */
+
 /* This assignment originated at UC Riverside. The hash table size
  should be defined at compile time. Use -D HASH_TABLE_SIZE=X */
 
