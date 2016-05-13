@@ -1,4 +1,10 @@
-
+/*
+ * @file sspapp.h Processes input to build and query a graph to
+ * find the shortest path
+ *
+ * @author Katherine Jouzapaitis
+ * @date 05/08/2016
+ */
 
 #include <iostream>
 #include <fstream>
